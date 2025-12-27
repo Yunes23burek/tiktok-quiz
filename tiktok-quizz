@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vocabulary Quiz</title>
+
+<style>
+body {
+    margin: 0;
+    background: linear-gradient(180deg, #dff3ff, #b7e4ff);
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+}
+
+h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+/* مكان الصورة (فارغ) */
+.placeholder {
+    width: 180px;
+    height: 180px;
+    border: 3px dashed rgba(0,0,0,0.2);
+    border-radius: 20px;
+    margin: 0 auto 25px;
+}
+
+/* العداد الدائري */
+.timer-circle {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    position: relative;
+}
+
+svg {
+    transform: rotate(-90deg);
+}
+
+circle {
+    fill: none;
+    stroke-width: 10;
+}
+
+.bg {
+    stroke: #e0e0e0;
+}
+
+.progress {
+    stroke: #007bff;
+    stroke-dasharray: 314;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.time-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* الإجابة */
+.answer {
+    font-size: 28px;
+    color: #1a7f37;
+    margin-top: 20px;
+    display: none;
+    animation: fade 0.6s ease-in-out;
+}
+
+@keyframes fade {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* زر ملء الشاشة (مخفي) */
+.fullscreen-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.05;
+    font-size: 12px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>What is this called?</h1>
+
+    <!-- مكان الصورة -->
+    <div class="placeholder"></div>
+
+    <!-- العداد -->
+    <div class="timer-circle">
+        <svg width="120" height="120">
+            <circle class="bg" cx="60" cy="60" r="50"></circle>
+            <circle class="progress" cx="60" cy="60" r="50"></circle>
+        </svg>
+        <div class="time-text" id="time">5</div>
+    </div>
+
+    <div class="answer" id="answer"></div>
+
+    <div class="fullscreen-btn" onclick="openFullscreen()">⛶</div>
+</div>
+
+<script>
+const words = ["Spoon", "Key", "Watch", "Umbrella", "Scissors"];
+let index = 0;
+let time = 5;
+const circle = document.querySelector(".progress");
+const timeText = document.getElementById("time");
+const answer = document.getElementById("answer");
+const circumference = 314;
+
+function startRound() {
+    time = 5;
+    answer.style.display = "none";
+    answer.textContent = words[index];
+    timeText.textContent = time;
+    circle.style.strokeDashoffset = 0;
+
+    const interval = setInterval(() => {
+        time--;
+        timeText.textContent = time;
+        circle.style.strokeDashoffset =
+            circumference - (circumference * time) / 5;
+
+        if (time === 0) {
+            answer.style.display = "block";
+        }
+
+        if (time < 0) {
+            clearInterval(interval);
+            index++;
+            if (index < words.length) {
+                startRound();
+            }
+        }
+    }, 1000);
+}
+
+startRound();
+
+/* ملء الشاشة */
+function openFullscreen() {
+    if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+    }
+}
+</script>
+
+</body>
+</html>
